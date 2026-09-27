@@ -24,6 +24,13 @@ function MenuPage() {
     <SiteFrame>
       <Section kicker={t.qrK} title={site.stance[lang].menuT}>
         <p className="max-w-2xl text-muted">{t.qrLead}</p>
+        <a href="/cafe/menu-qr.png" download className="mt-5 inline-flex w-fit items-center gap-4 rounded-2xl border border-line bg-paper-deep p-3">
+          <img src="/cafe/menu-qr.png" alt="Menü QR" className="h-28 w-28 rounded-lg bg-foam p-1" />
+          <span>
+            <span className="block font-display text-xl text-ink">QR menü</span>
+            <span className="mt-1 block text-sm text-muted">Okutunca bu menü açılır. Masaya basmak için görseli indir.</span>
+          </span>
+        </a>
         <div className="mt-5 flex flex-wrap gap-2">
           {categories.map((name) => (
             <button
