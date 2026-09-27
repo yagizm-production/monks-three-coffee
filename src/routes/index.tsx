@@ -49,28 +49,13 @@ function Home() {
       </Section>
 
       <Section id="menu" kicker={t.menuK} title={stance.menuT}>
-        <div className="grid gap-8 md:grid-cols-2">
+        <p className="max-w-xl text-muted">{t.qrLead}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
           {categories.map((cat) => (
-            <div key={cat}>
-              <h3 className="font-display text-2xl">{t.cats[cat] ?? cat}</h3>
-              <ul className="mt-3 divide-y divide-line">
-                {site.menu
-                  .filter((m) => m.category === cat)
-                  .slice(0, 3)
-                  .map((m) => (
-                    <li key={m.id} className="flex items-center gap-3 py-3">
-                      <img src={m.image} alt="" className="h-14 w-14 rounded-xl object-cover" />
-                      <span className="min-w-0 flex-1">
-                        <span className="block">{t.names[m.id] ?? m.name}</span>
-                        <span className="text-sm text-muted">{lang === "en" ? t.notes[m.id] ?? m.note : m.note}</span>
-                      </span>
-                    </li>
-                  ))}
-              </ul>
-            </div>
+            <Link key={cat} to="/menu" className="btn-ghost text-sm">{t.cats[cat] ?? cat}</Link>
           ))}
         </div>
-        <Link to="/menu" className="btn-ghost mt-6">{t.allMenu}</Link>
+        <Link to="/menu" className="btn mt-6">{t.allMenu}</Link>
       </Section>
 
       <Section id="galeri" kicker={t.galleryK} title={stance.galleryT}>

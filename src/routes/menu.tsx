@@ -1,56 +1,152 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { SiteFrame, Section } from "@/components/site-frame";
+import { useMemo, useState } from "react";
+import { SiteFrame } from "@/components/site-frame";
 import { useI18n } from "@/lib/i18n";
-import { useSite } from "@/lib/site-store";
+import { useSite, type MenuItem } from "@/lib/site-store";
+
+const PICKS = [
+  "sicak-v60",
+  "sicak-cold-brew",
+  "milk-monks-latte",
+  "espresso-single-espresso",
+  "kokteyl-kuzu-kulagi",
+  "iced-iced-latte-affogato",
+  "tatli-san-sebastian",
+];
 
 export const Route = createFileRoute("/menu")({
   head: () => ({
     meta: [
       { title: "Menü | Monk’s Three Coffee Kuşadası" },
-      { name: "description", content: "Monk’s Three Coffee menu in Kuşadası." },
+      { name: "description", content: "Monk’s Three Coffee QR menü, Kuşadası." },
     ],
   }),
   component: MenuPage,
 });
 
+function dayIndex() {
+  const now = new Date();
+  return Math.floor(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) / 86_400_000);
+}
+
+function showPrice(price: string, fallback: string) {
+  if (!price || price.startsWith("0,00") || price.startsWith("0.00")) return fallback;
+  return price;
+}
+
 function MenuPage() {
   const site = useSite();
-  const { t, lang } = useI18n();
-  const categories = ["Tümü", ...new Set(site.menu.map((m) => m.category))];
-  const [cat, setCat] = useState("Tümü");
-  const items = site.menu.filter((m) => cat === "Tümü" || m.category === cat);
+  const { t } = useI18n();
+  const [query, setQuery] = useState("");
+  const [cat, setCat] = useState("");
+  const [open, setOpen] = useState("");
+  const q = query.trim().toLocaleLowerCase("tr");
+  const categories = useMemo(() => [...new Set(site.menu.map((m) => m.category))], [site.menu]);
+  const today = useMemo(() => {
+    const pool = PICKS.map((id) => site.menu.find((m) => m.id === id)).filter((m): m is MenuItem => Boolean(m));
+    const list = pool.length ? pool : site.menu.slice(0, 1);
+    return list[dayIndex() % list.length];
+  }, [site.menu]);
+
+  const cover = (name: string) => {
+    const rows = site.menu.filter((m) => m.category === name);
+    return rows.find((m) => !m.image.includes("logo"))?.image ?? rows[0]?.image ?? "/cafe/logo.jpg";
+  };
+
+  const matches = q
+    ? site.menu.filter((m) => `${m.name} ${m.note} ${m.category}`.toLocaleLowerCase("tr").includes(q))
+    : [];
+  const groups = q
+    ? categories
+        .map((name) => ({ name, items: matches.filter((m) => m.category === name) }))
+        .filter((g) => g.items.length)
+    : [];
+  const inCat = !q && cat ? site.menu.filter((m) => m.category === cat) : [];
+
   return (
     <SiteFrame>
-      <Section kicker={t.qrK} title={site.stance[lang].menuT}>
-        <p className="max-w-2xl text-muted">{t.qrLead}</p>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {categories.map((name) => (
-            <button
-              key={name}
-              type="button"
-              onClick={() => setCat(name)}
-              className={name === cat ? "btn-dark text-sm" : "btn-ghost text-sm"}
-            >
-              {name === "Tümü" ? t.all : t.cats[name] ?? name}
+      <div className="mx-auto max-w-lg px-4 pt-4">
+        <label className="sticky top-2 z-20 block">
+          <span className="sr-only">{t.search}</span>
+          <input
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setOpen("");
+            }}
+            placeholder={t.searchPh}
+            className="field w-full bg-paper text-base"
+            enterKeyHint="search"
+          />
+        </label>
+
+        {q ? (
+          <div className="mt-4">
+            {groups.length === 0 ? <p className="text-muted">{t.empty}</p> : null}
+            {groups.map((g) => (
+              <section key={g.name} className="mt-5">
+                <h2 className="text-xs uppercase tracking-[0.16em] text-caramel">{g.name}</h2>
+                <ul className="mt-2 overflow-hidden rounded-2xl border border-line bg-paper-deep">
+                  {g.items.map((m) => (
+                    <Row key={m.id} item={m} open={open === m.id} price={showPrice(m.price, t.atBar)} onToggle={() => setOpen(open === m.id ? "" : m.id)} />
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        ) : cat ? (
+          <div className="mt-4">
+            <button type="button" className="btn-ghost text-sm" onClick={() => { setCat(""); setOpen(""); }}>
+              ← {t.back}
             </button>
-          ))}
-        </div>
-        <ul className="mt-8 grid gap-4 sm:grid-cols-2">
-          {items.map((m) => (
-            <li key={m.id} className="overflow-hidden rounded-2xl border border-line bg-paper-deep">
-              <img src={m.image} alt="" className="aspect-[4/3] w-full object-cover" />
-              <div className="flex items-start justify-between gap-3 p-4">
-                <span>
-                  <span className="block text-lg">{t.names[m.id] ?? m.name}</span>
-                  <span className="text-sm text-muted">{lang === "en" ? t.notes[m.id] ?? m.note : m.note}</span>
+            <h1 className="mt-3 font-display text-3xl">{cat}</h1>
+            <ul className="mt-3 overflow-hidden rounded-2xl border border-line bg-paper-deep">
+              {inCat.map((m) => (
+                <Row key={m.id} item={m} open={open === m.id} price={showPrice(m.price, t.atBar)} onToggle={() => setOpen(open === m.id ? "" : m.id)} />
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <>
+            {today ? (
+              <button type="button" onClick={() => setCat(today.category)} className="mt-4 flex w-full items-center gap-3 rounded-2xl border border-line bg-paper p-3 text-left">
+                <img src={today.image} alt="" className="h-16 w-16 rounded-xl object-cover" />
+                <span className="min-w-0">
+                  <span className="block text-xs uppercase tracking-[0.16em] text-caramel">{t.today}</span>
+                  <span className="block truncate text-lg">{today.name}</span>
+                  <span className="text-caramel">{showPrice(today.price, t.atBar)}</span>
                 </span>
-                <span className="shrink-0 text-caramel">{m.price || t.atBar}</span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </Section>
+              </button>
+            ) : null}
+            <h1 className="mt-6 text-xs uppercase tracking-[0.16em] text-caramel">{t.pick}</h1>
+            <ul className="mt-3 grid grid-cols-2 gap-3">
+              {categories.map((name) => (
+                <li key={name}>
+                  <button type="button" onClick={() => setCat(name)} className="w-full overflow-hidden rounded-2xl border border-line bg-paper-deep text-left">
+                    <img src={cover(name)} alt="" className="aspect-[4/3] w-full object-cover" />
+                    <span className="block px-3 py-2 text-sm">{name}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </div>
     </SiteFrame>
+  );
+}
+
+function Row({ item, open, price, onToggle }: { item: MenuItem; open: boolean; price: string; onToggle: () => void }) {
+  return (
+    <li className="border-b border-line last:border-0">
+      <button type="button" onClick={onToggle} className="flex w-full items-center gap-3 px-3 py-3 text-left">
+        <img src={item.image} alt="" className="h-14 w-14 shrink-0 rounded-xl object-cover" />
+        <span className="min-w-0 flex-1">
+          <span className="block leading-tight">{item.name}</span>
+          {item.note && open ? <span className="mt-1 block text-sm text-muted">{item.note}</span> : null}
+        </span>
+        <span className="shrink-0 text-sm text-caramel">{price}</span>
+      </button>
+    </li>
   );
 }
