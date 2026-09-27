@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { qrMenu } from "./qr-menu";
 
 export type MenuItem = {
   id: string;
@@ -59,27 +60,10 @@ export const defaults: SiteContent = {
     "Dijital vitrin, tezgâhtaki özenle aynı olsun. Masadaki QR menü karar süresini kısaltsın, Google Haritalar’da adres, saat ve site görünsün, memnun misafir tek dokunuşla yorum bırakabilsin. Hedef: “Kuşadası cafe” aramasında Monk’s Three’nin adı, menüsü ve konumu ilk bakışta net olsun.",
   address: "Atatürk Caddesi 64/A, 09400 Kuşadası / Aydın",
   phone: "+90 53X XXX XX XX",
-  hours: "Her gün 09:00 – 23:00",
+  hours: "Her gün 09:00 – 23:59",
   mapsQuery: "Monk's Three Coffee Atatürk Caddesi Kuşadası",
   instagram: "https://www.instagram.com/monksthreekusadasi/",
-  menu: [
-    { id: "esp", category: "Kahve", name: "Espresso", note: "Günün net ve güçlü özeti. Karakteristik, yoğun ve pürüzsüz.", price: "", image: "/cafe/m-esp.jpg" },
-    { id: "v60", category: "Kahve", name: "V60", note: "Zamanın ve suyun dansı. Çekirdeğin tüm notalarını hissetmek isteyenlere.", price: "", image: "/cafe/m-v60.jpg" },
-    { id: "turk", category: "Kahve", name: "Türk kahvesi", note: "Geleneksel dokunuş, modern kavurma. Ağır ateşte, tam kıvamında.", price: "", image: "/cafe/m-turk.jpg" },
-    { id: "latte", category: "Kahve", name: "Latte", note: "Sütle yumuşamış, sakin bir fincan.", price: "", image: "/cafe/m-latte.jpg" },
-    { id: "mac", category: "Kahve", name: "Caramel macchiato", note: "Karamel, süt ve espresso, kat kat.", price: "", image: "/cafe/m-mac.jpg" },
-    { id: "mocha", category: "Kahve", name: "Mocha", note: "Kakao ile ısınan espresso.", price: "", image: "/cafe/m-mocha.jpg" },
-    { id: "chai", category: "Kahve", name: "Chai latte", note: "Tarçın ve baharat, yavaş içilir.", price: "", image: "/cafe/m-chai.jpg" },
-    { id: "cold", category: "Soğuk", name: "Cold brew", note: "16 saatlik sabrın eseri. Düşük asidite, yüksek ferahlık.", price: "", image: "/cafe/m-cold.jpg" },
-    { id: "iced", category: "Soğuk", name: "Iced coffee", note: "Buz gibi bir Ege esintisi. Sıcak günlerin ritmini değiştiren lezzet.", price: "", image: "/cafe/m-iced.jpg" },
-    { id: "affo", category: "Soğuk", name: "Affogato", note: "Tatlı bir zıtlık. Zengin vanilya dondurması ile taze espressonun buluşması.", price: "", image: "/cafe/m-affo.jpg" },
-    { id: "kuzu", category: "Soğuk", name: "Kuzukulağı", note: "Ekşi, naneli, buz gibi.", price: "", image: "/cafe/m-kuzu.jpg" },
-    { id: "shake", category: "Soğuk", name: "Milkshake", note: "Meyve ve krema, kalın bir pipet.", price: "", image: "/cafe/m-shake.jpg" },
-    { id: "ss", category: "Tatlı", name: "San Sebastian", note: "İçi akışkan, dışı yanık... Kahvenin en yakın dostu.", price: "", image: "/cafe/m-ss.jpg" },
-    { id: "don", category: "Tatlı", name: "Dondurma", note: "Mevsimin üç topu.", price: "", image: "/cafe/m-don.jpg" },
-    { id: "kahv", category: "Mutfak", name: "Kahvaltı tabağı", note: "Güne sağlam bir başlangıç. Taptaze yerel lezzetler ve demli çay eşliğinde.", price: "", image: "/cafe/m-brk.jpg" },
-    { id: "sand", category: "Mutfak", name: "Peynirli sandviç", note: "Sıcak sandviç, yanında demli çay.", price: "", image: "/cafe/m-sand.jpg" },
-  ],
+  menu: qrMenu,
   reviews: [
     { id: "r1", name: "A. Y.", text: "Kuşadası'nda gerçek nitelikli kahve içebileceğiniz nadir yerlerden. Özellikle Cold Brew'ları yaz sıcaklarında hayat kurtarıyor. Çalışmak için de harika bir ortam.", stars: 5, source: "misafir" },
     { id: "r2", name: "D. E.", text: "San Sebastian cheesecake ve V60 ikilisi inanılmazdı. Baristalar kahve konusunda çok bilgili ve güler yüzlü. Artık favori mekanım.", stars: 5, source: "misafir" },
@@ -120,7 +104,7 @@ export const defaults: SiteContent = {
   },
 };
 
-const KEY = "monks-three-site-v3";
+const KEY = "monks-three-site-v4";
 
 export function mapsUrl(query: string) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
