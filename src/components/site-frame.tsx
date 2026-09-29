@@ -37,9 +37,9 @@ export function SiteFrame({ children }: { children: ReactNode }) {
             </a>
           </div>
         </div>
-        <nav className="flex gap-4 overflow-x-auto px-4 pb-3 text-sm text-muted md:hidden">
+        <nav className="flex flex-wrap gap-x-4 gap-y-1 px-4 pb-2 text-sm text-muted md:hidden">
           {paths.map((to, i) => (
-            <Link key={to} to={to} className="shrink-0 py-2" activeProps={{ className: "text-ink" }}>
+            <Link key={to} to={to} className="py-1.5" activeProps={{ className: "text-ink" }}>
               {t.nav[i]}
             </Link>
           ))}
