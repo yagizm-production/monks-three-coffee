@@ -141,7 +141,7 @@ function Admin() {
             ) : null}
 
             {tab === "Menü" ? draft.menu.map((item, i) => (
-              <div key={item.id} className="grid gap-2 rounded-xl border border-line p-3 md:grid-cols-4">
+              <div key={item.id} className="grid gap-2 rounded-xl border border-line p-3 md:grid-cols-3">
                 <input className="field" value={item.category} onChange={(e) => {
                   const menu = draft.menu.slice();
                   menu[i] = { ...item, category: e.target.value };
@@ -150,11 +150,6 @@ function Admin() {
                 <input className="field" value={item.name} onChange={(e) => {
                   const menu = draft.menu.slice();
                   menu[i] = { ...item, name: e.target.value };
-                  setDraft({ ...draft, menu });
-                }} />
-                <input className="field" value={item.price} placeholder="Fiyat" onChange={(e) => {
-                  const menu = draft.menu.slice();
-                  menu[i] = { ...item, price: e.target.value };
                   setDraft({ ...draft, menu });
                 }} />
                 <input className="field" value={item.note} onChange={(e) => {

@@ -35,6 +35,26 @@ export const Route = createRootRoute({
         <HeadContent />
       </head>
       <body>
+        <style>{`body{padding-top:36px}header.sticky,header.fixed,nav.fixed{top:36px!important}`}</style>
+        <div
+          role="note"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 80,
+            background: "#140e09",
+            color: "#f4e7cf",
+            textAlign: "center",
+            font: "600 13px/1.35 ui-sans-serif, system-ui, sans-serif",
+            letterSpacing: "0.03em",
+            padding: "8px 14px",
+            borderBottom: "1px solid #c9a86e",
+          }}
+        >
+          Demodur. Portföy amaçlı yapılmıştır.
+        </div>
         <PreviewHostBridge />
         <AuthProvider>
           <Outlet />

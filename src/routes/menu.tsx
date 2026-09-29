@@ -29,11 +29,6 @@ function dayIndex() {
   return Math.floor(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) / 86_400_000);
 }
 
-function showPrice(price: string, fallback: string) {
-  if (!price || price.startsWith("0,00") || price.startsWith("0.00")) return fallback;
-  return price;
-}
-
 function MenuPage() {
   const site = useSite();
   const { t } = useI18n();
@@ -88,7 +83,7 @@ function MenuPage() {
                 <h2 className="text-xs uppercase tracking-[0.16em] text-caramel">{g.name}</h2>
                 <ul className="mt-2 overflow-hidden rounded-2xl border border-line bg-paper-deep">
                   {g.items.map((m) => (
-                    <Row key={m.id} item={m} open={open === m.id} price={showPrice(m.price, t.atBar)} onToggle={() => setOpen(open === m.id ? "" : m.id)} />
+                    <Row key={m.id} item={m} open={open === m.id} onToggle={() => setOpen(open === m.id ? "" : m.id)} />
                   ))}
                 </ul>
               </section>
@@ -102,7 +97,7 @@ function MenuPage() {
             <h1 className="mt-3 font-display text-3xl">{cat}</h1>
             <ul className="mt-3 overflow-hidden rounded-2xl border border-line bg-paper-deep">
               {inCat.map((m) => (
-                <Row key={m.id} item={m} open={open === m.id} price={showPrice(m.price, t.atBar)} onToggle={() => setOpen(open === m.id ? "" : m.id)} />
+                <Row key={m.id} item={m} open={open === m.id} onToggle={() => setOpen(open === m.id ? "" : m.id)} />
               ))}
             </ul>
           </div>
@@ -114,7 +109,6 @@ function MenuPage() {
                 <span className="min-w-0">
                   <span className="block text-xs uppercase tracking-[0.16em] text-caramel">{t.today}</span>
                   <span className="block truncate text-lg">{today.name}</span>
-                  <span className="text-caramel">{showPrice(today.price, t.atBar)}</span>
                 </span>
               </button>
             ) : null}
@@ -136,7 +130,7 @@ function MenuPage() {
   );
 }
 
-function Row({ item, open, price, onToggle }: { item: MenuItem; open: boolean; price: string; onToggle: () => void }) {
+function Row({ item, open, onToggle }: { item: MenuItem; open: boolean; onToggle: () => void }) {
   return (
     <li className="border-b border-line last:border-0">
       <button type="button" onClick={onToggle} className="flex w-full items-center gap-3 px-3 py-3 text-left">
@@ -145,7 +139,6 @@ function Row({ item, open, price, onToggle }: { item: MenuItem; open: boolean; p
           <span className="block leading-tight">{item.name}</span>
           {item.note && open ? <span className="mt-1 block text-sm text-muted">{item.note}</span> : null}
         </span>
-        <span className="shrink-0 text-sm text-caramel">{price}</span>
       </button>
     </li>
   );
