@@ -32,10 +32,17 @@ export const Route = createRootRoute({
   component: () => (
     <html lang="tr" suppressHydrationWarning>
       <head>
+        <script
+          id="portfolio-storage-shim"
+          dangerouslySetInnerHTML={{
+            __html:
+              '(function(){function mem(){var m={};return{getItem:function(k){return Object.prototype.hasOwnProperty.call(m,k)?m[k]:null},setItem:function(k,v){m[k]=String(v)},removeItem:function(k){delete m[k]},clear:function(){m={}},key:function(i){return Object.keys(m)[i]||null},get length(){return Object.keys(m).length}}}["localStorage","sessionStorage"].forEach(function(name){var ok=false;try{window[name].getItem("__p");ok=true}catch(e){}if(!ok){var fake=mem();try{Object.defineProperty(window,name,{configurable:true,get:function(){return fake}})}catch(e){}}});})();',
+          }}
+        />
         <HeadContent />
       </head>
       <body>
-        <style>{`body{padding-top:36px}header.sticky,header.fixed,nav.fixed{top:36px!important}`}</style>
+        <style>{`html,body{overflow-x:hidden}body{padding-top:46px}header.sticky,header.fixed,nav.fixed{top:46px!important}`}</style>
         <div
           role="note"
           style={{
@@ -47,10 +54,12 @@ export const Route = createRootRoute({
             background: "#140e09",
             color: "#f4e7cf",
             textAlign: "center",
-            font: "600 13px/1.35 ui-sans-serif, system-ui, sans-serif",
-            letterSpacing: "0.03em",
-            padding: "8px 14px",
+            font: "600 12px/1.35 ui-sans-serif, system-ui, sans-serif",
+            letterSpacing: "0.02em",
+            padding: "8px 12px",
             borderBottom: "1px solid #c9a86e",
+            whiteSpace: "normal",
+            overflowWrap: "anywhere",
           }}
         >
           Demodur. Portföy amaçlı yapılmıştır.
